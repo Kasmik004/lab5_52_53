@@ -27,6 +27,20 @@ class Graph
         return false;
     }
 
+    bool checkNeighbourSingle(int v, int w) const
+    {
+        std::vector<int> neighbours = this->neighbours(v);
+        for (auto j = neighbours.begin(); j != neighbours.end(); j++)
+        {
+            if (*j == w)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
 public:
     Graph(bool is_directed) : is_directed(is_directed)
     {
@@ -129,64 +143,81 @@ public:
         return adjacency_list->size();
     }
 
-    int numEdges()
+    // Author (from numEdges): Kasmik Regmi
+
+    int numEdges() const
     {
         int count = 0;
-        for (int i = 0; i < adjacency_list->size(); i++)
+        for (auto i = adjacency_list->begin(); i != adjacency_list->end(); i++)
         {
-            count += adjacency_list->at(i).second.size();
+            count += i->second.size();
         }
         return count;
     };
-    int indegree(int v)
+
+    int indegree(int v) const
     {
         int count = 0;
-        for (int i = 0; i < adjacency_list->size(); i++)
+        for (auto j = adjacency_list->begin(); j != adjacency_list->end(); j++)
         {
-            for (int j = 0; j < adjacency_list->at(i).second.size(); j++)
+            if (j->first != v)
             {
-                if (adjacency_list->at(i).second[j] == v)
+                for (auto i = j->second.begin(); i != j->second.end(); i++)
                 {
-                    count++;
+                    if (*i == v)
+                    {
+                        count++;
+                    }
                 }
             }
         }
         return count;
     };
-    int outdegree(int v)
-    {
-        int count = 0 for (int i = 0; i < adjacency_list->size(); i++)
-        {
-            if (adjacency_list->at(i).first() == v)
-            {
-                count += adjacency_list->at(i).second.size();
-            }
-        }
 
-        return adjacency_list->at(v).second.size();
-    };
-    int degree(int v)
+    int outdegree(int v) const
     {
-        return adjacency_list->at(v).second.size() + indegree(v);
-    };
-    void neighbors(int v)
-    {
-        for (int i = 0; i < adjacency_list->at(v).second.size(); i++)
+        int count = 0;
+        for (auto j = adjacency_list->begin(); j != adjacency_list->end(); j++)
         {
-            std::cout << adjacency_list->at(v).second[i] << " ";
-        }
-        std::cout << std::endl;
-    };
-    void checkNeighbors(int v, int w)
-    {
-        for (int i = 0; i < adjacency_list->at(v).second.size(); i++)
-        {
-            if (adjacency_list->at(v).second[i] == w)
+            if (j->first == v)
             {
-                std::cout << "True" << std::endl;
-                return;
+                for (auto i = j->second.begin(); i != j->second.end(); i++)
+                {
+                    if (*i == v)
+                    {
+                        count++;
+                    }
+                }
             }
         }
-        std::cout << "False" << std::endl;
+        return count;
+    };
+
+    int degree(int v) const
+    {
+        return indegree(v) + outdegree(v);
+    };
+
+    std::vector<int> neighbours(int v) const
+    {
+        for (int i = 0; i < adjacency_list->size(); i++)
+        {
+            if (adjacency_list->at(i).first == v)
+            {
+                return adjacency_list->at(i).second;
+            }
+        }
+    };
+
+    bool neighbour(int v, int w) const
+    {
+        if (!isDirected())
+        {
+            return checkNeighbourSingle(v, w);
+        }
+        else
+        {
+            return checkNeighbourSingle(v, w) && checkNeighbourSingle(w, v);
+        }
     };
 };
