@@ -1,9 +1,20 @@
+#ifndef GRAPH_H
+#define GRAPH_H
+
+#include <vector>
+
 class Graph
 {
 
-private:
 public:
-    Graph(int V);
-    void addEdge(int v, int w);
-    void DFS(int v);
+    Graph(bool);
+    bool isEmpty() const;
+    bool isDirected() const;
+    bool addVertex(int);
+    bool addEdge(int, int);
+    bool removeVertex(int);
+    bool removeEdge(int, int);
+    int numVertices() const;
 };
+
+#endif
