@@ -46,6 +46,14 @@ public:
     };
     int outdegree(int v)
     {
+        int count = 0 for (int i = 0; i < adjacency_list->size(); i++)
+        {
+            if (adjacency_list->at(i).first() == v)
+            {
+                count += adjacency_list->at(i).second.size();
+            }
+        }
+
         return adjacency_list->at(v).second.size();
     };
     int degree(int v)
