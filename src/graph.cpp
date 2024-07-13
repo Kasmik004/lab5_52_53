@@ -4,7 +4,6 @@
 
 class Graph
 {
-
     bool is_directed;
     std::vector<std::pair<int, std::vector<int>>> *adjacency_list;
 
@@ -37,9 +36,8 @@ class Graph
                 return true;
             }
         }
-
         return false;
-    };
+    }
 
 public:
     Graph(bool is_directed) : is_directed(is_directed)
@@ -73,33 +71,21 @@ public:
 
     bool addEdge(int v1, int v2)
     {
-        if (isDirected())
+        bool v1_found = false, v2_found = false;
+        for (auto i = adjacency_list->begin(); i != adjacency_list->end(); i++)
         {
-            for (auto i = adjacency_list->begin(); i != adjacency_list->end(); i++)
+            if (i->first == v1)
             {
-                if (i->first == v1)
-                {
-                    i->second.push_back(v2);
-                    return true;
-                }
+                i->second.push_back(v2);
+                v1_found = true;
             }
-            return false;
-        }
-        else
-        {
-            for (auto i = adjacency_list->begin(); i != adjacency_list->end(); i++)
+            if (!isDirected() && i->first == v2)
             {
-                if (i->first == v1)
-                {
-                    i->second.push_back(v2);
-                }
-                if (i->first == v2)
-                {
-                    i->second.push_back(v1);
-                }
+                i->second.push_back(v1);
+                v2_found = true;
             }
-            return true;
         }
+        return v1_found && (isDirected() || v2_found);
     }
 
     bool removeVertex(int v)
@@ -109,7 +95,7 @@ public:
             if (i->first == v)
             {
                 adjacency_list->erase(i);
-                return true;
+                break;
             }
             else
             {
@@ -123,7 +109,19 @@ public:
                 }
             }
         }
-        return false;
+
+        for (auto i = adjacency_list->begin(); i != adjacency_list->end(); i++)
+        {
+            for (auto j = i->second.begin(); j != i->second.end(); j++)
+            {
+                if (*j == v)
+                {
+                    i->second.erase(j);
+                    break;
+                }
+            }
+        }
+        return true;
     }
 
     bool removeEdge(int v1, int v2)
@@ -153,7 +151,7 @@ public:
             count += i->second.size();
         }
         return count;
-    };
+    }
 
     int indegree(int v) const
     {
@@ -172,31 +170,24 @@ public:
             }
         }
         return count;
-    };
+    }
 
     int outdegree(int v) const
     {
-        int count = 0;
         for (auto j = adjacency_list->begin(); j != adjacency_list->end(); j++)
         {
             if (j->first == v)
             {
-                for (auto i = j->second.begin(); i != j->second.end(); i++)
-                {
-                    if (*i == v)
-                    {
-                        count++;
-                    }
-                }
+                return j->second.size();
             }
         }
-        return count;
-    };
+        return 0;
+    }
 
     int degree(int v) const
     {
         return indegree(v) + outdegree(v);
-    };
+    }
 
     std::vector<int> neighbours(int v) const
     {
@@ -207,17 +198,18 @@ public:
                 return adjacency_list->at(i).second;
             }
         }
-    };
+        return std::vector<int>();
+    }
 
     bool neighbour(int v, int w) const
     {
-        if (!isDirected())
+        if (isDirected())
         {
             return checkNeighbourSingle(v, w);
         }
         else
         {
-            return checkNeighbourSingle(v, w) && checkNeighbourSingle(w, v);
+            return checkNeighbourSingle(v, w) || checkNeighbourSingle(w, v);
         }
-    };
+    }
 };
