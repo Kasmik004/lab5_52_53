@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <utility>
+#include <ctime>
+#include <cstdlib>
 
 class Graph
 {
@@ -213,3 +215,23 @@ public:
         }
     }
 };
+
+void generateRandomGraph(Graph &graph, int numVertices, int numEdges)
+{
+    for (int i = 0; i < numVertices; i++)
+    {
+        graph.addVertex(i);
+    }
+
+    int v1, v2;
+    for (int i = 0; i < numEdges; i++)
+    {
+        do
+        {
+            v1 = rand() % numVertices;
+            v2 = rand() % numVertices;
+        } while (v1 == v2 || graph.neighbour(v1, v2));
+
+        graph.addEdge(v1, v2);
+    }
+}

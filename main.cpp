@@ -1,4 +1,6 @@
 #include <iostream>
+#include <ctime>
+#include <cstdlib>
 // #include "src/graph.h"
 #include "src/graph.cpp"
 
@@ -52,6 +54,18 @@ int main()
     {
         std::cout << "Graph is empty" << std::endl;
     }
+
+    srand(time(0));
+    int numVertices = 5;
+    int numEdges = 6;
+
+    Graph graph(false);
+
+    generateRandomGraph(graph, numVertices, numEdges);
+
+    std::cout << "Random Graph Generated:\n";
+    std::cout << "Number of vertices: " << graph.numVertices() << "\n";
+    std::cout << "Number of edges: " << graph.numEdges() << "\n";
 
     return 0;
 }
